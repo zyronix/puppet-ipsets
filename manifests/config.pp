@@ -19,12 +19,6 @@ class ipsets::config {
     home       => $ipsets::user_home,
     shell      => '/bin/bash',
   }
-  -> file {'ipsets webroot':
-    ensure => directory,
-    path   => $ipsets::webroot,
-    owner  => $ipsets::user,
-    group  => 'root',
-  }
   -> file {'ipsets in user':
     ensure => directory,
     path   => "${ipsets::user_home}/ipsets",
@@ -88,6 +82,14 @@ class ipsets::config {
     }
   }
   if $ipsets::manage_webserver {
+    file {'ipsets webroot':
+      ensure  => directory,
+      path    => $ipsets::webroot,
+      owner   => $ipsets::user,
+      group   => 'root',
+      require => User[$ipsets::user],
+    }
+
     exec {'copy index.html':
       command => "cp /usr/share/update-ipsets/webdir/index.html ${ipsets::webroot}",
       creates => "${ipsets::webroot}/index.html",

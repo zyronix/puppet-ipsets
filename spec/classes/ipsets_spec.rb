@@ -29,5 +29,22 @@ describe 'ipsets' do
         )
       }
     end
+
+    context "with webserver disabled on #{os}" do
+      let(:facts) { os_facts }
+      let(:params) do
+        {
+          manage_webserver: false,
+        }
+      end
+
+      it {
+        is_expected.to compile
+        is_expected.not_to contain_class('apache')
+        is_expected.not_to contain_exec('copy index.html')
+        is_expected.not_to contain_apache__vhost('ipsets')
+        is_expected.not_to contain_file('ipsets webroot')
+      }
+    end
   end
 end

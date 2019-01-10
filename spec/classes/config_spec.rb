@@ -14,13 +14,13 @@ describe 'ipsets::config' do
           'gid'        => 'ipsets',
           'home'       => '/home/ipsets',
           'shell'      => '/bin/bash',
-        ).that_comes_before('File[ipsets webroot]')
+        ).that_comes_before('File[ipsets in user]')
         is_expected.to contain_file('ipsets webroot').with(
           'ensure' => 'directory',
           'path'   => '/var/www/ipsets',
           'owner'  => 'ipsets',
           'group'  => 'root',
-        ).that_comes_before('File[ipsets in user]')
+        ).that_requires('User[ipsets]')
         is_expected.to contain_file('ipsets in user').with(
           'ensure' => 'directory',
           'path'   => '/home/ipsets/ipsets',
