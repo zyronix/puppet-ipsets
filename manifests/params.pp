@@ -6,6 +6,11 @@
 #   include ipsets::params
 class ipsets::params {
   $manage_webserver = true
+  $webroot = '/var/www/ipsets'
+  $servername = $::fqdn
+  $ssl_cert = '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+  $ssl_key = '/etc/ssl/private/ssl-cert-snakeoil.key'
+  $ssl_enable = true
 
   $required_packages = [
     'unzip',
@@ -25,8 +30,9 @@ class ipsets::params {
   $firehol_downloadurl = 'https://github.com/firehol/firehol/archive/master.zip'
   $iprange_downloadurl = 'https://github.com/firehol/iprange/archive/master.zip'
 
-  $ipsets_user = 'ipsets'
-  $ipsets_group = 'ipsets'
+  $user = 'ipsets'
+  $user_home = '/home/ipsets'
+  $group = 'ipsets'
 
   $tmp_dir = '/tmp'
   $firehol_archive = 'firehol.zip'
@@ -35,4 +41,8 @@ class ipsets::params {
   $install_path = '/root'
   $firehol_install_path = "${install_path}/firehol-master"
   $iprange_install_path = "${install_path}/iprange-master"
+
+  $export_enable = false
+  $export_file_name = "${webroot}/ipsets.tar"
+  $export_exclude_file = "${user_home}/exclude-list"
 }

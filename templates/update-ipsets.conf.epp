@@ -1,0 +1,5 @@
+BASE_DIR=<%= $ipsets::user_home %>/ipsets
+HISTORY_DIR=<%= $ipsets::user_home %>/ipsets/history
+ERRORS_DIR=<%= $ipsets::user_home %>/ipsets/errors
+WEB_DIR=<%= $ipsets::webroot %>
+IPSETS_APPLY=0

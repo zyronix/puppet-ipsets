@@ -5,3 +5,7 @@ fixtures:
   forge_modules:
     stdlib: "puppetlabs/stdlib"
     archive: "puppet/archive"
+    apache: "puppetlabs/apache"
+    concat: "puppetlabs/concat"
+    translate: "puppetlabs/translate"
+    cron_core: "puppetlabs/cron_core"

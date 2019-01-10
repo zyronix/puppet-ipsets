@@ -16,7 +16,7 @@ describe 'ipsets::install' do
           'extract_path' => '/root',
           'creates'      => '/root/firehol-master',
           'cleanup'      => false,
-        ).that_comes_before('Archive[iprange]')
+        ).that_comes_before('Archive[iprange]').that_notifies('Exec[firehol autogen]')
         is_expected.to contain_archive('iprange').with(
           'path'         => '/tmp/iprange.zip',
           'source'       => 'https://github.com/firehol/iprange/archive/master.zip',
@@ -24,29 +24,61 @@ describe 'ipsets::install' do
           'extract_path' => '/root',
           'creates'      => '/root/iprange-master',
           'cleanup'      => false,
-        )
+        ).that_notifies('Exec[iprange autogen]')
         is_expected.to contain_exec('iprange autogen').with(
-          'command'     => './autogen.sh',
-          'creates'     => '/usr/sbin/iprange',
+          'command'     => '/root/iprange-master/autogen.sh',
+          'creates'     => '/usr/bin/iprange',
           'cwd'         => '/root/iprange-master',
         ).that_notifies('Exec[iprange configure]')
         is_expected.to contain_exec('iprange configure').with(
-          'command'     => './configure --prefix=/usr CFLAGS="-march=native -O3" --disable-man',
-          'creates'     => '/usr/sbin/iprange',
+          'command'     => '/root/iprange-master/configure --prefix=/usr CFLAGS="-march=native -O3" --disable-man',
+          'creates'     => '/usr/bin/iprange',
           'cwd'         => '/root/iprange-master',
           'refreshonly' => true,
         ).that_notifies('Exec[iprange make]')
         is_expected.to contain_exec('iprange make').with(
           'command'     => 'make',
-          'creates'     => '/usr/sbin/iprange',
+          'creates'     => '/usr/bin/iprange',
           'cwd'         => '/root/iprange-master',
           'refreshonly' => true,
         ).that_notifies('Exec[iprange make install]')
         is_expected.to contain_exec('iprange make install').with(
           'command'     => 'make install',
-          'creates'     => '/usr/sbin/iprange',
+          'creates'     => '/usr/bin/iprange',
           'cwd'         => '/root/iprange-master',
           'refreshonly' => true,
+        )
+        is_expected.to contain_exec('firehol autogen').with(
+          'command'     => '/root/firehol-master/autogen.sh',
+          'creates'     => '/usr/sbin/firehol',
+          'cwd'         => '/root/firehol-master',
+        ).that_notifies('Exec[firehol configure]')
+        is_expected.to contain_exec('firehol configure').with(
+          'command'     => '/root/firehol-master/configure --prefix=/usr --sysconfdir=/etc --disable-man --disable-doc',
+          'creates'     => '/usr/sbin/firehol',
+          'cwd'         => '/root/firehol-master',
+          'refreshonly' => true,
+        ).that_notifies('Exec[firehol make]')
+        is_expected.to contain_exec('firehol make').with(
+          'command'     => 'make',
+          'creates'     => '/usr/sbin/firehol',
+          'cwd'         => '/root/firehol-master',
+          'refreshonly' => true,
+        ).that_notifies('Exec[firehol make install]')
+        is_expected.to contain_exec('firehol make install').with(
+          'command'     => 'make install',
+          'creates'     => '/usr/sbin/firehol',
+          'cwd'         => '/root/firehol-master',
+          'refreshonly' => true,
+        )
+        is_expected.to contain_file('ipsets symlink').with(
+          'ensure' => 'link',
+          'path'   => '/usr/bin/update-ipsets',
+          'target' => '/usr/sbin/update-ipsets',
+        ).that_requires('Exec[firehol make install]')
+        is_expected.to contain_class('apache').with(
+          'default_vhost' => false,
+          'default_mods'  => false,
         )
       }
     end
