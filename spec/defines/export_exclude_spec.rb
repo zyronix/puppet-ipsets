@@ -17,7 +17,7 @@ describe 'ipsets::export_exclude' do
         is_expected.to compile
         is_expected.to contain_concat__fragment('ipsets export exclude iblocklist_edu*').with(
           'target'  => 'ipsets export exclude',
-          'content' => %r{'# TEST NETWORKS\niblocklist_edu\*\n'},
+          'content' => %r{# TEST NETWORKS\niblocklist_edu\*\n},
         )
       }
     end

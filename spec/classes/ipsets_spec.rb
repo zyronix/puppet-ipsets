@@ -18,7 +18,7 @@ describe 'ipsets' do
           'ensure'  => 'file',
           'mode'    => '0755',
           'path'    => '/home/ipsets/export_ipsets.sh',
-          'content' => %r{'EXPORT_FILE_NAME=/root/EXPORT_FILE_NAME\nEXCLUDE_FILE=/root/EXPORT_EXCLUDE_FILE\nHOME_DIR=/home/ipsets\n'},
+          'content' => %r{EXPORT_FILE_NAME=/root/EXPORT_FILE_NAME\nEXCLUDE_FILE=/root/EXPORT_EXCLUDE_FILE\nHOME_DIR=/home/ipsets\n},
           'owner'   => 'ipsets',
           'group'   => 'ipsets',
         ).that_requires('File[ipsets in user]')

@@ -38,7 +38,7 @@ describe 'ipsets::config' do
           'path'    => '/home/ipsets/.update-ipsets/update-ipsets.conf',
           'owner'   => 'ipsets',
           'group'   => 'ipsets',
-          'content' => %r{'^BASE_DIR=/home/ipsets/ipsets\nHISTORY_DIR=/home/ipsets/ipsets/history\nERRORS_DIR=/home/ipsets/ipsets/errors\nWEB_DIR=/var/www/ipsets'},
+          'content' => %r{^BASE_DIR=/home/ipsets/ipsets\nHISTORY_DIR=/home/ipsets/ipsets/history\nERRORS_DIR=/home/ipsets/ipsets/errors\nWEB_DIR=/var/www/ipsets},
         ).that_requires('File[ipsets in user]')
         is_expected.to contain_cron('update-ipsets').with(
           'command' => 'update-ipsets > /dev/null 2>&1',
