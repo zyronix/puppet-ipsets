@@ -57,7 +57,7 @@ class ipsets::config {
   }
 
   -> cron { 'update-ipsets':
-    command => 'update-ipsets > /dev/null 2>&1',
+    command => '/bin/bash -l -exec "update-ipsets > /dev/null 2>&1"',
     user    => $ipsets::user,
     minute  => '*/9',
   }

@@ -47,7 +47,7 @@ describe 'ipsets::config' do
           'group'  => 'ipsets',
         ).that_requires('File[update-ipsets config]')
         is_expected.to contain_cron('update-ipsets').with(
-          'command' => 'update-ipsets > /dev/null 2>&1',
+          'command' => '/bin/bash -l -exec "update-ipsets > /dev/null 2>&1"',
           'user'    => 'ipsets',
           'minute'  => '*/9',
         ).that_requires('File[update-ipsets config]')
