@@ -39,6 +39,13 @@ class ipsets::config {
   } else {
     $config_path = '/etc/firehol'
   }
+  file {'ipsets.d dir':
+    ensure  => directory,
+    path    => $ipsets::ip_list_path,
+    owner   => $ipsets::user,
+    group   => $ipsets::group,
+    require => File['update-ipsets config']
+  }
 
   file {'update-ipsets config':
     ensure  => file,

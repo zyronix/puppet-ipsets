@@ -8,6 +8,7 @@
 # @param export_enable When enabled a cron job will be created that exports the ipsets to the export path.
 # @param export_file_name Absolute path to the export tar.
 # @param export_exclude_file Use this value to specify the fail containing the sources to be excluded during export.
+# @param manage_webserver Enabled by default. When enabled, this will run the apache module and create some vhosts.
 #
 class ipsets  (
   Boolean $export_enable = $ipsets::params::export_enable,

@@ -40,6 +40,12 @@ describe 'ipsets::config' do
           'group'   => 'ipsets',
           'content' => %r{^BASE_DIR=/home/ipsets/ipsets\nHISTORY_DIR=/home/ipsets/ipsets/history\nERRORS_DIR=/home/ipsets/ipsets/errors\nWEB_DIR=/var/www/ipsets},
         ).that_requires('File[ipsets in user]')
+        is_expected.to contain_file('ipsets.d dir').with(
+          'ensure' => 'directory',
+          'path'   => '/home/ipsets/.update-ipsets/ipsets.d',
+          'owner'  => 'ipsets',
+          'group'  => 'ipsets',
+        ).that_requires('File[update-ipsets config]')
         is_expected.to contain_cron('update-ipsets').with(
           'command' => 'update-ipsets > /dev/null 2>&1',
           'user'    => 'ipsets',

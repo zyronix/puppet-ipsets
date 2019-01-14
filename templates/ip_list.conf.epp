@@ -1,0 +1,6 @@
+update <%= $name %> <%= $mins %> <%= $aggregation %> ipv4 <%= $keep %> \
+        "<%= $url %>" \
+        <%= $processor %> \
+        "<%= $category %>" \
+        "<%= $info %>" \
+        "<%= $maintainer %>" "<%= $maintainer_url %>" \

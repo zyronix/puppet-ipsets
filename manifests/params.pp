@@ -34,6 +34,8 @@ class ipsets::params {
   $user_home = '/home/ipsets'
   $group = 'ipsets'
 
+  $ip_list_path = "${user_home}/.update-ipsets/ipsets.d"
+
   $tmp_dir = '/tmp'
   $firehol_archive = 'firehol.zip'
   $iprange_archive = 'iprange.zip'
