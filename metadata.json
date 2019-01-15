@@ -5,6 +5,8 @@
   "summary": "Module to install IPSets, part of firehol. Use for collecting blacklists.",
   "license": "Apache-2.0",
   "source": "https://github.com/zyronix/puppet-ipsets",
+  "project_page": "https://github.com/zyronix/puppet-ipsets",
+  "issues_url": "https://github.com/zyronix/puppet-ipsets/issues",
   "dependencies": [
     {
       "name": "puppetlabs/concat",
