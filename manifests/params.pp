@@ -40,7 +40,8 @@ class ipsets::params {
         'automake',
         'pkg-config',
         'curl',
-        'ipset'
+        'ipset',
+        'traceroute'
       ]
     }
     default: { fail('OS family not supported') }

@@ -8,6 +8,7 @@ describe 'ipsets::install' do
 
       it {
         is_expected.to compile
+        is_expected.to contain_package('traceroute')
         is_expected.to contain_package('unzip').that_comes_before('Archive[firehol]')
         is_expected.to contain_archive('firehol').with(
           'path'         => '/tmp/firehol.zip',
@@ -84,7 +85,6 @@ describe 'ipsets::install' do
         when 'Debian'
           is_expected.to contain_package('zlib1g-dev')
         when 'Redhat'
-          is_expected.to contain_package('traceroute')
           is_expected.to contain_package('zlib-devel')
         end
       }
