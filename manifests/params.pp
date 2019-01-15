@@ -1,9 +1,7 @@
-# A description of what this class does
+# Set all the parameters for the ipsets class
 #
-# @summary A short summary of the purpose of this class
+# @summary Sets parameters for the main ipsets class. Should not be called directly.
 #
-# @example
-#   include ipsets::params
 class ipsets::params {
   $manage_webserver = true
   $webroot = '/var/www/ipsets'

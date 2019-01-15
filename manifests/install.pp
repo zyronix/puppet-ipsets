@@ -1,9 +1,7 @@
-# A description of what this class does
+# This class installs everything
 #
-# @summary A short summary of the purpose of this class
+# @summary Class to install everything, should not be called directory.
 #
-# @example
-#   include ipsets::install
 class ipsets::install {
   Exec {
     path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',

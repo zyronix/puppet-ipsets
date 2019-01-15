@@ -14,7 +14,18 @@
 #     maintainer     => 'Internet Storm Shield',
 #     maintainer_url => 'https://www.dshield.org/',
 #   }
-
+# @param mins The amount of minutes for the source to be refreshed.
+#        Can also be math: mins => '"$[24*60]"'
+# @param aggregation Some source do not keep a backlog. Specify if ipsets
+#        has to do this. For example to get a backlog for 7d and 30d aggregation => '"$[24*60*7] $[24*60*30]"'
+# @param keep specify what to keep, either the ips or only the networks.
+# @param url the url to download the ip_list
+# @param processor Firehol has a list of processors. See https://github.com/firehol/blocklist-ipsets/wiki/Extending-update-ipsets
+# @param category Specify the category of how the ip_list should be displayed. See
+#        https://github.com/firehol/blocklist-ipsets/wiki/Extending-update-ipsets for then full list
+# @param info A brief description of the source.
+# @param maintainer The maintainer of the source.
+# @param maintainer_url The url to the maintainers website.
 define ipsets::ip_list(
   Variant[String, Integer] $mins,
   Variant[String, Integer] $aggregation,

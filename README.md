@@ -1,10 +1,6 @@
 
 # ipsets
 
-Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://puppet.com/pdk/latest/pdk_generating_modules.html .
-
-The README template below provides a starting point with details about what information to include in your README.
-
 #### Table of Contents
 
 1. [Description](#description)
@@ -18,71 +14,124 @@ The README template below provides a starting point with details about what info
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your module does and what kind of problems users can solve with it.
+This module installs IPSets, which is part of Firehol. IPsets is a script called: update-ipsets which download ipsets or blacklist on the internet. Those IPSets can be used to analyse logfile. For example during analyse of an attack it might be interested to compare IPs with IPs on black lists. Besides blacklists there are also IPsets of information sources. For example the IPs of Google. Using those IPs it becomes easier to analyse log files.
 
-This should be a fairly short description helps the user decide if your module is what they want.
+Basically it setup up a selfhosted: http://iplists.firehol.org/
+
+This module helps you to install everything for this.
 
 ## Setup
 
-### What ipsets affects **OPTIONAL**
+### What ipsets affects
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+With the default settings it will install ipsets from source, run as the user ipsets and configures apache aswell.
 
-If there's more that they should know about, though, this is the place to mention:
+### Setup Requirements
 
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+The only requirement that is there is if you enable SSL and let this module configure the webserver that SSL certicates are available. This is not the case for Redhat / CentOS.
 
-### Setup Requirements **OPTIONAL**
+Create self signed certificates using:
 
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
+```
+mkdir -p /etc/ssl/private
+chmod 700 /etc/ssl/private
+/etc/ssl/certs/make-dummy-cert /etc/ssl/private/cert.pem
+chmod 600 /etc/ssl/private/cert.pem
+```
 
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
+Now configure ipsets to use the file:
+
+```
+class {'ipsets':
+  ssl_cert => '/etc/ssl/private/cert.pem',
+  ssl_key  => '/etc/ssl/private/cert.pem',
+}
+```
 
 ### Beginning with ipsets
 
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+To use ipsets just include ipsets:
+
+```
+include ipsets
+```
+
+Now everything should be setup, you still have to enable sources.
+
+```
+# login on the machine
+su - ipsets
+update-ipsets enable dshield
+update-ipsets enable firehol_level1
+update-ipsets -s
+```
+
+This is the minimal setup needed. The module has set up everything to update every 9 minutes.
+
+A beter setup is to enable all sources:
+
+```
+# login on the machine
+su - ipsets
+update-ipsets --enable-all
+```
+
+This will take a lot of time and will cause a lot of resources (network and diskspace ~30GB)
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your users how to use your module to solve problems, and be sure to include code examples. Include three to five examples of the most important or common tasks a user can accomplish with your module. Show users how to accomplish more complex tasks that involve different types, classes, and functions working in tandem.
-
-## Reference
-
-This section is deprecated. Instead, add reference information to your code as Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your module. For details on how to add code comments and generate documentation with Strings, see the Puppet Strings [documentation](https://puppet.com/docs/puppet/latest/puppet_strings.html) and [style guide](https://puppet.com/docs/puppet/latest/puppet_strings_style.html)
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the root of your module directory and list out each of your module's classes, defined types, facts, functions, Puppet tasks, task plans, and resource types and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
-
-For example:
+### More advanced
+Some more of the advanced parameters. For example when you have enable all sources it might be beter to place all the data on a different disk. The only way to do this is to set the home directory of the user to the new disk. In our example '/data'.
 
 ```
-### `pet::cat`
+class {'ipsets':
+  user          => 'testuser',
+  group         => 'testgroup',
+  webroot       => '/var/www/here',
+  user_home     => '/data',
+}
+```
 
-#### Parameters
+### Export IPSets
+When all the sources have been downloaded it might be handy to download all the sources at once. For this the export function is available, but this is disabled by default.
 
-##### `meow`
+The export function export all the source every 9 minutes aswell and places them as a tar in the webroot folder.
 
-Enables vocalization in your cat. Valid options: 'string'.
+```
+class {'ipsets':
+  export_enable => true,
+}
+```
 
-Default: 'medium-loud'.
+In case you want to stop exporting a specify source, you can use the export_exclude defined_type. To disable dshield in the export:
+
+```
+ipsets::export_exclude { 'dshield*': 
+  description => 'Reason why you want to exclude it',
+}
+```
+
+### Adding additional ipsets
+You might want to add additional ipsets, for this use the ip_list defined type:
+
+```
+ipsets::ip_list { 'dshield': 
+  mins           => 5,
+  aggregation    => 0,
+  keep           => 'both',
+  url            => 'https://www.dshield.org/block.txt',
+  processor      => trim,
+  category       => 'attack',
+  info           => 'Dshield blocklist',
+  maintainer     => 'Internet Storm Shield',
+  maintainer_url => 'https://www.dshield.org/',
+}
 ```
 
 ## Limitations
 
-In the Limitations section, list any incompatibilities, known issues, or other warnings.
+Not yet tested running under the root user.
 
 ## Development
 
-In the Development section, tell other users the ground rules for contributing to your project and how they should submit their work.
-
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
+This module uses PDK, so make sure all the unit test pass and validation pass. Make sure you written new tests for your code and if required any additional documentation. Also remember to generate new references.md file (using puppet strings generate --format markdown).

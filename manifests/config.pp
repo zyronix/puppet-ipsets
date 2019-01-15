@@ -1,9 +1,7 @@
-# A description of what this class does
+# This class configures ipsets
 #
-# @summary A short summary of the purpose of this class
+# @summary Class used to configure ipsets, should not be called directly.
 #
-# @example
-#   include ipsets::config
 class ipsets::config {
   Exec {
     path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
@@ -27,6 +25,7 @@ class ipsets::config {
     group  => $ipsets::group,
   }
 
+  # This directory does not exist when running as root
   if $ipsets::user != 'root' {
     file {'.update-ipsets dir':
       ensure => directory,
@@ -53,12 +52,15 @@ class ipsets::config {
     require => File['ipsets in user'],
   }
 
+  # This is the main cron, the '-l' is important in case you use a proxy
+  # Use profile.d scripts to configure the http_proxy environment variable.
   -> cron { 'update-ipsets':
     command => '/bin/bash -l -exec "update-ipsets > /dev/null 2>&1"',
     user    => $ipsets::user,
     minute  => '*/9',
   }
 
+  # This enables the self written export feature.
   if $ipsets::export_enable == true {
     file {'ipsets export':
       ensure  => file,
@@ -85,6 +87,9 @@ class ipsets::config {
       minute  => '*/9',
     }
   }
+
+  # This code block enables the webserver. It might be beter to configure the
+  # webserver yourself (for example for beter SSLCiphers)
   if $ipsets::manage_webserver {
     file {'ipsets webroot':
       ensure  => directory,
@@ -94,6 +99,7 @@ class ipsets::config {
       require => User[$ipsets::user],
     }
 
+    # The update script does not generate the index html, so remember to copy it.
     exec {'copy index.html':
       command => "cp /usr/share/update-ipsets/webdir/index.html ${ipsets::webroot}",
       creates => "${ipsets::webroot}/index.html",
