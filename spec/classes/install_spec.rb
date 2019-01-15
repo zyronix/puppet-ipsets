@@ -80,6 +80,13 @@ describe 'ipsets::install' do
           'default_vhost' => false,
           'default_mods'  => false,
         )
+        case facts[:osfamily]
+        when 'Debian'
+          is_expected.to contain_package('zlib1g-dev')
+        when 'Redhat'
+          is_expected.to contain_package('traceroute')
+          is_expected.to contain_package('zlib-devel')
+        end
       }
     end
   end

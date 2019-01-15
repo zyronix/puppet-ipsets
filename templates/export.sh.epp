@@ -2,7 +2,7 @@
 # Managed by Puppet
 # DO NOT EDIT!
 
-EXPORT_FILE_NAME=<%= $ipsets::export_file_name %>
+EXPORT_FILE_NAME=<%= $ipsets::webroot %>/<%= $ipsets::export_file_name %>
 EXCLUDE_FILE=<%= $ipsets::export_exclude_file %>
 HOME_DIR=<%= $ipsets::user_home %>
 

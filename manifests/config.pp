@@ -9,6 +9,7 @@ class ipsets::config {
     path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
   }
 
+  # Create user, group and the ipsets inside the users directory.
   group {$ipsets::group:
     ensure => present,
   }
@@ -27,17 +28,13 @@ class ipsets::config {
   }
 
   if $ipsets::user != 'root' {
-    $config_path = "${ipsets::user_home}/.update-ipsets"
-
     file {'.update-ipsets dir':
       ensure => directory,
-      path   => $config_path,
+      path   => $ipsets::config_path,
       owner  => $ipsets::user,
       group  => $ipsets::group,
       before => File['update-ipsets config'],
     }
-  } else {
-    $config_path = '/etc/firehol'
   }
   file {'ipsets.d dir':
     ensure  => directory,
@@ -49,7 +46,7 @@ class ipsets::config {
 
   file {'update-ipsets config':
     ensure  => file,
-    path    => "${config_path}/update-ipsets.conf",
+    path    => "${ipsets::config_path}/update-ipsets.conf",
     owner   => $ipsets::user,
     group   => $ipsets::group,
     content => epp('ipsets/update-ipsets.conf.epp'),
