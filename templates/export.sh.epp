@@ -6,5 +6,6 @@ EXPORT_FILE_NAME=<%= $ipsets::webroot %>/<%= $ipsets::export_file_name %>
 EXCLUDE_FILE=<%= $ipsets::export_exclude_file %>
 HOME_DIR=<%= $ipsets::user_home %>
 
+cd ${HOME_DIR}
 rm ${EXPORT_FILE_NAME}
-tar cf ${EXPORT_FILE_NAME} --exclude-from=${EXCLUDE_FILE} ${HOME_DIR}/ipsets/*.{ip,net}set --mode='ug+rw'
+tar cf ${EXPORT_FILE_NAME} --exclude-from=${EXCLUDE_FILE} ipsets/*.{ip,net}set --mode='ug+rw'
