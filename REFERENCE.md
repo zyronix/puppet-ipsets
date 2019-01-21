@@ -132,6 +132,14 @@ Specify the primary group of the user. Will be created. Defaults to ipsets.
 
 Default value: $ipsets::params::group
 
+##### `cron`
+
+Data type: `String`
+
+Specify the cron string in the format '* * * * *'. Defaults to every 9 minutes.
+
+Default value: $ipsets::params::cron
+
 ### ipsets::config
 
 This class configures ipsets

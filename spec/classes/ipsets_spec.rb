@@ -181,5 +181,26 @@ describe 'ipsets' do
         )
       }
     end
+    context "test for cron #{os}" do
+      let(:facts) { os_facts }
+      let(:params) do
+        {
+          cron: '1 2 3 4 5',
+        }
+      end
+
+      it {
+        is_expected.to compile
+        is_expected.to contain_cron('update-ipsets').with(
+          'command' => '/bin/bash -l -exec "update-ipsets > /dev/null 2>&1"',
+          'user'    => 'ipsets',
+          'minute'   => '1',
+          'hour'     => '2',
+          'monthday' => '3',
+          'month'    => '4',
+          'weekday'  => '5',
+        )
+      }
+    end
   end
 end

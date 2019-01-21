@@ -56,6 +56,8 @@ class ipsets::params {
 
   $export_enable = false
 
+  $cron = '*/9 * * * *'
+
   # The parameter will probably not require setting by the user
   # If you however need them please open an issue.
   $tmp_dir = '/tmp'

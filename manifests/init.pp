@@ -20,6 +20,7 @@
 #        It is possible to run as root, but no recommanded. The user will be created by this module.
 # @param user_home Specify the home directory of the user. Ipsets will place files in the homedirectory.
 # @param group Specify the primary group of the user. Will be created. Defaults to ipsets.
+# @param cron Specify the cron string in the format '* * * * *'. Defaults to every 9 minutes.
 #
 class ipsets  (
   Boolean $export_enable = $ipsets::params::export_enable,
@@ -34,6 +35,7 @@ class ipsets  (
   String $user = $ipsets::params::user,
   String $user_home = $ipsets::params::user_home,
   String $group = $ipsets::params::group,
+  String $cron = $ipsets::params::cron,
 ) inherits ipsets::params {
   if user != 'root' {
     $config_path = "${user_home}/.update-ipsets"

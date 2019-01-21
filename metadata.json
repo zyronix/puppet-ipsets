@@ -1,6 +1,6 @@
 {
   "name": "zyronix-ipsets",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Romke van Dijk",
   "summary": "Module to install IPSets, part of firehol. Use for collecting blacklists.",
   "license": "Apache-2.0",

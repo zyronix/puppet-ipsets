@@ -7,6 +7,9 @@ class ipsets::config {
     path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
   }
 
+  # Split up the cron
+  $cron_split = split($ipsets::cron, ' ')
+
   # Create user, group and the ipsets inside the users directory.
   group {$ipsets::group:
     ensure => present,
@@ -55,9 +58,13 @@ class ipsets::config {
   # This is the main cron, the '-l' is important in case you use a proxy
   # Use profile.d scripts to configure the http_proxy environment variable.
   -> cron { 'update-ipsets':
-    command => '/bin/bash -l -exec "update-ipsets > /dev/null 2>&1"',
-    user    => $ipsets::user,
-    minute  => '*/9',
+    command  => '/bin/bash -l -exec "update-ipsets > /dev/null 2>&1"',
+    user     => $ipsets::user,
+    minute   => $cron_split[0],
+    hour     => $cron_split[1],
+    monthday => $cron_split[2],
+    month    => $cron_split[3],
+    weekday  => $cron_split[4],
   }
 
   # This enables the self written export feature.
